@@ -14,5 +14,5 @@ public interface MemberService {
 
     CompletableFuture<Integer> getMemberAgeAsync_supplyAsync(String name);
 
-    CompletableFuture<Integer> temp();
+    CompletableFuture<Integer> getMemberIdAsync(String name);
 }

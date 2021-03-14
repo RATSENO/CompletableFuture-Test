@@ -31,11 +31,21 @@ public class MemberServiceImplTest {
 
     @Test
     public void 동기_방식으로_ID조회하기(){
-
+        log.info("시작");
         int memberId = memberService.getMemberId("철수");
-        log.info("조회될때까지 아무것도 못함");
+        log.info("끝");
 
         Assert.assertEquals(1, memberId);
+    }
+
+    @Test
+    public void 비동기_방식_잠시_블록킹(){
+        CompletableFuture<Integer> completableFuture = memberService.getMemberIdAsync("철수");
+        log.info("아직 최종 데이터를 전달 받지는 않았지만, 다른작업 수행가능");
+        Integer join = completableFuture.join();
+        if(join>0){
+            log.info("/*메인 스레드가 끝나는것을 방지하기 위한 코드*/");
+        }
     }
 
     @Test
@@ -43,15 +53,6 @@ public class MemberServiceImplTest {
 
         CompletableFuture<Void> completableFuture = memberService.getMemberIdAsync_runAsync("철수");
         log.info("아직 최종 데이터를 전달 받지는 않았지만, 다른작업 수행가능");
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("메인 스레드에서 실행 중");
-            }
-        };
-        timer.schedule(timerTask, 1000, 1000);;
-
         completableFuture.join();
     }
 
@@ -62,14 +63,6 @@ public class MemberServiceImplTest {
         CompletableFuture<Integer> completableFuture = memberService.getMemberIdAsync_supplyAsync("철수");
 
         log.info("아직 최종 데이터를 전달 받지는 않았지만, 다른작업 수행가능");
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println(Thread.currentThread().getName() + "다른 작업 실행 중");
-            }
-        };
-        timer.schedule(timerTask, 1000, 1000);
 
         Integer memberId = completableFuture.join();
         log.info("completableFuture.join()하는 순간 블록킹 발생");
@@ -133,7 +126,7 @@ public class MemberServiceImplTest {
     @Test
     public void 비동기_방식_논블록킹_되는_콜백방식_나이_조회하기_allOf(){
         //8초 걸리는 메인 스레드 종료 방지용
-        CompletableFuture<Integer> temp = memberService.temp();
+        CompletableFuture<Integer> temp = memberService.getMemberIdAsync("철수");
 
         //3초 걸림
         CompletableFuture memberIdAsyncSupplyAsync = memberService.getMemberIdAsync_supplyAsync("철수");
@@ -168,7 +161,7 @@ public class MemberServiceImplTest {
 
     @Test
     public void test(){
-        CompletableFuture<Integer> temp = memberService.temp();
+        CompletableFuture<Integer> temp = memberService.getMemberIdAsync("철수");
 
         CompletableFuture completableFuture1 = CompletableFuture.supplyAsync(() -> {
             log.info("future-1");

@@ -25,34 +25,24 @@ public class MemberRepository {
     }
 
     public int getMemberIdByMemberName(String name){
-        StopWatch stopWatch = new StopWatch();
         try {
             //조회하는데 3초 걸림
-            stopWatch.start();
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         int id = memberVOMap.get(name).getId();
-        stopWatch.stop();
-
-        log.info("getTotalTimeMillis:"+stopWatch.getTotalTimeMillis());
         return memberVOMap.get(name).getId();
     }
 
     public int getMemberAgeByMemberName(String name){
-        StopWatch stopWatch = new StopWatch();
         try {
             //조회하는데 6초 걸림
-            stopWatch.start();
             Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         int id = memberVOMap.get(name).getAge();
-        stopWatch.stop();
-
-        log.info("getTotalTimeMillis:"+stopWatch.getTotalTimeMillis());
         return memberVOMap.get(name).getId();
     }
 }

@@ -62,20 +62,16 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public CompletableFuture<Integer> temp() {
+    public CompletableFuture<Integer> getMemberIdAsync(String name) {
         CompletableFuture<Integer> future = new CompletableFuture<>();
-
         new Thread(() -> {
-
             log.info("새로운 쓰레드로 작업 시작");
-            try {
-                Thread.sleep(8000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            future.complete(1);
+            int memberAgeByMemberName = 0;
+            memberAgeByMemberName = memberRepository.getMemberAgeByMemberName(name);
+            future.complete(memberAgeByMemberName);
         }).start();
-
+        //결과값이 나오기 전에 먼저 CompletableFuture<Integer>를 return하여
+        //메서드를 호출한곳에 주도권을 넘겨준다.
         return future;
     }
 
